@@ -4,7 +4,7 @@ import math
 import time
 import matplotlib.pyplot as plt
 
-# Initialize Pygame
+# Initialize Pygame1
 pygame.init()
 
 # Screen dimensions
