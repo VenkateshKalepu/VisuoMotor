@@ -76,8 +76,8 @@ def calculate_directional_error(target_pos, reversal_pos):
 def visuomotor_task():
     clock = pygame.time.Clock()
     trial_count = 0
-    max_trials = 10
-    blocks = ["baseline", "rotation", "aftereffect"]
+    max_trials = [20, 60, 20]
+    blocks = [1, 2, 3]
     block_index = 0
     rotation_angle = -45  # Counterclockwise rotation
 
@@ -86,7 +86,7 @@ def visuomotor_task():
     while block_index < len(blocks):
         block_type = blocks[block_index]
 
-        while trial_count < max_trials:
+        while trial_count < max_trials[block_type-1]:
             screen.fill(black)
             pygame.draw.circle(screen, blue, center, start_circle_radius)
             target_index = random.randint(0, 7)
@@ -126,7 +126,7 @@ def visuomotor_task():
 
                 cursor_pos = get_joystick_position()
 
-                if block_type == "rotation":
+                if block_type == 2:
                     cursor_pos = apply_rotation(cursor_pos, rotation_angle)
 
                 draw_screen(target_index, neighboring_indices, cursor_pos)
@@ -150,14 +150,14 @@ def visuomotor_task():
     pygame.quit()
 
     # Plot the errors
-    baseline_errors = [e[2] for e in errors if e[0] == "baseline"]
-    rotation_errors = [e[2] for e in errors if e[0] == "rotation"]
-    aftereffect_errors = [e[2] for e in errors if e[0] == "aftereffect"]
+    baseline_errors = [e[2] for e in errors if e[0] == 1]
+    rotation_errors = [e[2] for e in errors if e[0] == 2]
+    aftereffect_errors = [e[2] for e in errors if e[0] == 3]
 
     plt.figure(figsize=(10, 6))
-    plt.plot(range(1, max_trials + 1), baseline_errors, label='Baseline')
-    plt.plot(range(1, max_trials + 1), rotation_errors, label='Rotation')
-    plt.plot(range(1, max_trials + 1), aftereffect_errors, label='Aftereffect')
+    plt.plot(range(1, max_trials[0] + 1), baseline_errors, label='Baseline')
+    plt.plot(range(1, max_trials[1] + 1), rotation_errors, label='Rotation')
+    plt.plot(range(1, max_trials[2] + 1), aftereffect_errors, label='Aftereffect')
     plt.xlabel('Trial Number')
     plt.ylabel('Directional Error (degrees)')
     plt.title('Directional Error Across Trials')
