@@ -70,7 +70,7 @@ def calculate_directional_error(target_pos, reversal_pos):
     reversal_vector = (reversal_pos[0] - center[0], reversal_pos[1] - center[1])
     target_angle = math.atan2(target_vector[1], target_vector[0])
     reversal_angle = math.atan2(reversal_vector[1], reversal_vector[0])
-    error = math.degrees(target_angle - reversal_angle)
+    error = math.degrees(abs(target_angle - reversal_angle))
     return error
 
 def visuomotor_task():
@@ -85,6 +85,7 @@ def visuomotor_task():
 
     while block_index < len(blocks):
         block_type = blocks[block_index]
+        print(block_type)
 
         while trial_count < max_trials[block_type-1]:
             screen.fill(black)
@@ -109,6 +110,8 @@ def visuomotor_task():
                         return
 
                 cursor_pos = get_joystick_position()
+                if block_type == 2:
+                    cursor_pos = apply_rotation(cursor_pos, rotation_angle)
                 speed = math.hypot(cursor_pos[0] - previous_pos[0], cursor_pos[1] - previous_pos[1])
                 previous_pos = cursor_pos
 
@@ -141,7 +144,7 @@ def visuomotor_task():
             error = calculate_directional_error(targets[target_index], cursor_pos)
             errors.append((block_type, trial_count + 1, error))
 
-            pygame.time.wait(1000)
+            pygame.time.wait(1500)
             trial_count += 1
 
         trial_count = 0
